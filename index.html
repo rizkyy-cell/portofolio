@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Portfolio | Riski Kurniawan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+
+    <style>
+        /* --- GLOBAL RESET --- */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Inter', sans-serif; 
+            text-decoration: none; list-style: none; 
+            scroll-behavior: smooth;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-dark: #000000;
+            --bg-card: #0a0a0a;
+            --text-white: #ffffff;
+            --text-gray: #a3a3a3;
+            --accent-blue: #3b82f6; 
+            --border-color: #1a1a1a; 
+        }
+
+        /* FIX WEB GOYANG DI MOBILE */
+        html, body { 
+            background-color: var(--bg-dark); 
+            color: var(--text-white); 
+            max-width: 100%; 
+            overflow-x: hidden; 
+            position: relative;
+        }
+
+        /* --- NAVBAR --- */
+        header { position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 20px 8%; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); z-index: 100; border-bottom: 1px solid var(--border-color); }
+        .logo { font-size: 20px; font-weight: 800; color: var(--text-white); letter-spacing: -0.5px; }
+        .logo span { color: var(--accent-blue); }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { color: var(--text-gray); font-size: 14px; font-weight: 500; transition: 0.3s; }
+        .nav-links a:hover { color: var(--text-white); }
+
+        /* --- SECTIONS --- */
+        section { padding: 100px 8% 80px; }
+        .section-title { text-align: center; font-size: 2.5rem; font-weight: 800; margin-bottom: 60px; }
+        .section-title span { color: var(--accent-blue); }
+
+        /* --- HERO --- */
+        .hero { display: flex; align-items: center; justify-content: space-between; padding-top: 180px; min-height: 90vh; }
+        .hero-text { max-width: 550px; }
+        .hero-text h1 { font-size: 4rem; font-weight: 800; line-height: 1.1; margin-bottom: 15px; }
+        .hero-text h1 span { color: var(--accent-blue); }
+        .hero-text h2 { font-size: 1.6rem; font-weight: 600; margin-bottom: 25px; color: var(--text-gray); }
+        .hero-text h2 span { color: var(--accent-blue); border-right: 2px solid var(--accent-blue); padding-right: 5px; animation: blink 0.7s infinite; }
+        .hero-text p { font-size: 1rem; color: var(--text-gray); line-height: 1.7; margin-bottom: 35px; }
+        
+        .hero-btns { display: flex; gap: 15px; flex-wrap: wrap; }
+        .btn-primary { padding: 14px 30px; background: var(--accent-blue); color: white; border-radius: 50px; font-weight: 600; transition: 0.3s; }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
+        .btn-outline { padding: 14px 30px; border: 1px solid var(--border-color); color: white; border-radius: 50px; font-weight: 600; transition: 0.3s; }
+        .btn-outline:hover { background: white; color: black; }
+
+        .hero-img img { width: 400px; height: 400px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 60px rgba(59, 130, 246, 0.2); }
+
+        /* --- ABOUT ME --- */
+        .about { background: var(--bg-card); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .about-container { display: flex; gap: 80px; align-items: center; justify-content: center;}
+        .about-content { max-width: 800px; text-align: center; margin: 0 auto;}
+        .about-content p { color: var(--text-gray); line-height: 1.8; font-size: 1.1rem; }
+
+        /* --- RUBIK CARD --- */
+        .rubik-wrapper { padding: 80px 8%; display: flex; justify-content: center; overflow: hidden; }
+        .rubik-card { background: #080514; border: 1px solid #1a162e; border-radius: 24px; padding: 50px; width: 100%; max-width: 500px; text-align: center; }
+        .rubik-title { font-family: monospace; font-size: 0.8rem; color: #8b5cf6; letter-spacing: 4px; margin-bottom: 20px; }
+        #rubik-canvas-container { width: 100%; height: 280px; margin: 0 auto; }
+
+        /* --- EXPERIENCE --- */
+        .exp-grid { display: grid; gap: 25px; }
+        .exp-box { background: var(--bg-card); border: 1px solid var(--border-color); padding: 40px; border-radius: 16px; border-left: 5px solid var(--accent-blue); transition: 0.3s; }
+        .exp-box:hover { transform: translateX(10px); background: #111; }
+
+        /* --- PORTFOLIO --- */
+        .port-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+        .port-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; overflow: hidden; transition: 0.3s; display: flex; flex-direction: column; }
+        .port-card:hover { transform: translateY(-10px); border-color: #333; }
+        .slider-container { position: relative; height: 260px; overflow: hidden; background: #000; }
+        .slider-wrapper { display: flex; height: 100%; transition: transform 0.4s ease-in-out; }
+        .slider-wrapper img, .slider-wrapper video { width: 100%; height: 100%; object-fit: cover; flex-shrink: 0; }
+        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: 1px solid rgba(255,255,255,0.2); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; z-index: 5; transition: 0.3s;}
+        .slider-btn:hover { background: var(--accent-blue); border-color: var(--accent-blue);}
+        .slider-btn.prev { left: 10px; }
+        .slider-btn.next { right: 10px; }
+        .port-info { padding: 30px; flex-grow: 1; display: flex; flex-direction: column; }
+        .port-badge { align-self: flex-start; background: rgba(59, 130, 246, 0.1); color: var(--accent-blue); padding: 6px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; margin-bottom: 15px;}
+        .port-info h3 { font-size: 1.3rem; margin-bottom: 10px; }
+        .port-info p { color: var(--text-gray); font-size: 0.95rem; line-height: 1.6; }
+
+        /* --- SKILLS (ANIMATED) --- */
+        .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 25px; }
+        .skill-box { 
+            background: var(--bg-card); 
+            border: 1px solid var(--border-color); 
+            padding: 35px 20px; 
+            border-radius: 16px; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+        .skill-box:hover { 
+            background: #111; 
+            border-color: var(--accent-blue); 
+            transform: translateY(-12px); 
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+        .skill-box i { font-size: 2.5rem; color: var(--accent-blue); margin-bottom: 15px; display: block; }
+        .skill-box h3 { font-size: 1.1rem; color: var(--text-white); }
+        .skill-box::after {
+            content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 3px; background: var(--accent-blue); transition: 0.4s;
+        }
+        .skill-box:hover::after { width: 100%; }
+
+        /* --- CONTACT --- */
+        .contact form { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px; }
+        .contact input, .contact textarea { padding: 15px; background: #111; border: 1px solid #222; color: white; border-radius: 8px; outline: none; width: 100%; }
+        .contact textarea { height: 150px; resize: none; }
+        
+        /* --- KREASI WHATSAPP BUTTON --- */
+        /* Dibuat lebih kecil, estetik, dan pakai efek glassmorphism */
+        .whatsapp-float {
+            position: fixed; bottom: 25px; right: 25px; 
+            width: 50px; height: 50px; 
+            background: rgba(37, 211, 102, 0.15); 
+            color: #25d366; 
+            border: 1px solid rgba(37, 211, 102, 0.3);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center; 
+            font-size: 28px; z-index: 1000; 
+            backdrop-filter: blur(8px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .whatsapp-float:hover { 
+            background: #25d366; color: white; 
+            transform: scale(1.15) rotate(10deg); 
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4); 
+            border-color: #25d366;
+        }
+
+        /* --- CUSTOM WA POPUP (SMOOTH ANIMATION) --- */
+        .wa-popup-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 2000; opacity: 0; visibility: hidden; 
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .wa-popup-overlay.active { opacity: 1; visibility: visible; }
+        
+        .wa-popup-box {
+            background: #0f0f13; border: 1px solid #222;
+            padding: 40px 30px; border-radius: 24px; text-align: center;
+            max-width: 380px; width: 90%; 
+            transform: translateY(40px) scale(0.9);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+        }
+        .wa-popup-overlay.active .wa-popup-box { 
+            transform: translateY(0) scale(1); 
+            opacity: 1; 
+        }
+        
+        .wa-popup-box .popup-icon { 
+            font-size: 65px; color: #25d366; margin-bottom: 15px; display: inline-block;
+            animation: floatIcon 2.5s ease-in-out infinite; 
+        }
+        @keyframes floatIcon { 
+            0%, 100% { transform: translateY(0); } 
+            50% { transform: translateY(-8px); } 
+        }
+
+        .wa-popup-box h3 { font-size: 1.4rem; margin-bottom: 10px; color: var(--text-white); }
+        .wa-popup-box p { color: var(--text-gray); font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px; }
+        
+        .wa-popup-btns { display: flex; gap: 15px; justify-content: center; }
+        .wa-popup-btns button {
+            padding: 12px 25px; border-radius: 50px; font-weight: 600; cursor: pointer;
+            border: none; transition: 0.3s; font-size: 0.95rem; width: 100%;
+        }
+        .btn-cancel { background: transparent; color: var(--text-white); border: 1px solid #333; }
+        .btn-cancel:hover { background: rgba(255, 255, 255, 0.05); }
+        .btn-continue { background: #25d366; color: white; box-shadow: 0 5px 15px rgba(37, 211, 102, 0.2); }
+        .btn-continue:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4); }
+
+        /* --- FOOTER --- */
+        footer { padding: 50px 8%; text-align: center; border-top: 1px solid var(--border-color); color: var(--text-gray); font-size: 0.9rem; }
+
+        @keyframes blink { 50% { border-color: transparent; } }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 968px) {
+            .hero { flex-direction: column; text-align: center; padding-top: 150px; }
+            .hero-img img { width: 300px; height: 300px; margin-top: 50px; }
+            .hero-btns { justify-content: center; }
+            .hero-text h1 { font-size: 3rem; }
+            .nav-links { display: none; /* Hide on small screens for cleaner look */ }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">RK<span>.Portfolio</span></div>
+        <nav class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#experience">Experience</a>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#skill">Skills</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-text">
+            <h1>Riski <br><span>Kurniawan</span></h1>
+            <h2>I'm a <span id="typewriter"></span></h2>
+            <p>Seorang praktisi Teknik Instalasi Listrik (TITL) dengan keahlian ganda di bidang IT & Hardware. Saya menjembatani solusi teknis lapangan dengan inovasi digital.</p>
+            <div class="hero-btns">
+                <a href="#contact" class="btn-primary">Hire Me</a>
+                <a href="https://drive.google.com/file/d/1E4YNfDLjWbMzpIVz5Da3yU4ZAUigzm8F/view?usp=drivesdk" target="_blank" class="btn-outline"><i class='bx bx-download'></i> Download CV</a>
+            </div>
+            <div class="socials" style="margin-top: 30px; display: flex; gap: 15px;">
+                <a href="https://www.instagram.com/rizky._kurniawan25" style="font-size: 24px; color: var(--text-gray);"><i class='bx bxl-instagram'></i></a>
+                <a href="https://www.tiktok.com/@rizky._kurniawan25" style="font-size: 24px; color: var(--text-gray);"><i class='bx bxl-tiktok'></i></a>
+            </div>
+        </div>
+        <div class="hero-img">
+            <img src="profile.jpg" alt="Rizky Kurniawan">
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="about-container">
+            <div class="about-content">
+                <h2 class="section-title">About <span>Me</span></h2>
+                <p>Saya adalah lulusan <strong>Teknik Instalasi Listrik (TITL)</strong> yang memiliki antusiasme tinggi terhadap integrasi sistem elektrikal dan teknologi digital. Dengan pengalaman praktis merakit panel kontrol industri hingga menangani perbaikan hardware elektronik, saya berdedikasi untuk memberikan solusi teknis yang akurat dan efisien. Di waktu luang, saya mendalami pengembangan web dan modifikasi antarmuka, menciptakan sinergi unik antara keahlian fisik dan kreativitas digital.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="rubik-wrapper">
+        <div class="rubik-card">
+            <div class="rubik-title">PROBLEM SOLVING 3D</div>
+            <div id="rubik-canvas-container"></div>
+            <p style="color: var(--text-gray); font-family: monospace; font-size: 0.8rem; margin-top: 20px;">Seperti Rubik's Cube, saya suka memecahkan masalah dengan sistematis & kreatif.</p>
+        </div>
+    </div>
+
+    <section class="experience" id="experience">
+        <h2 class="section-title">My <span>Experience</span></h2>
+        <div class="exp-grid">
+            <div class="exp-box">
+                <h3>Sistem Kontrol Motor Listrik</h3>
+                <h4>Industri & Domestik</h4>
+                <p>Spesialis dalam perakitan panel Star-Delta, instalasi Jaringan Tegangan Menengah, serta sistem kelistrikan bangunan komersial sesuai standar K3.</p>
+            </div>
+            <div class="exp-box">
+                <h3>Hardware & Device Troubleshooting</h3>
+                <h4>Teknisi Elektronik</h4>
+                <p>Berpengalaman memperbaiki smartphone (LCD & internal), kipas angin, mesin cuci,magicom serta peralatan elektronik rumah tangga dengan tingkat kerumitan tinggi.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="portfolio" id="portfolio">
+        <h2 class="section-title">Featured <span>Portfolio</span></h2>
+        <div class="port-grid">
+            
+            <div class="port-card">
+                <div class="slider-container">
+                    <div class="slider-wrapper" id="slider-industri" data-index="0">
+                        <img src="pt 1.jpg" alt="Trafo Foto 1">
+                        <img src="pt 2.jpg" alt="Trafo Foto 2">
+                        <img src="pt 3.jpg" alt="Trafo Foto 3">
+                        <img src="pt 5.jpg" alt="Trafo Foto 5">
+                        <img src="pt 6.jpg" alt="Trafo Foto 6">
+                        <img src="pt 7.jpg" alt="Trafo Foto 7">
+                        <img src="pt 8.jpg" alt="Trafo Foto 8">
+                        <img src="pt 9.jpg" alt="Trafo Foto 9">
+                        <img src="pt 10.jpg" alt="Trafo Foto 10">
+                        <img src="pt 11.jpg" alt="Trafo Foto 11">
+                        <img src="pt 12.jpg" alt="Trafo Foto 12">
+                        <img src="pt 13.jpg" alt="Trafo Foto 13">
+                        <img src="pt 14.jpg" alt="Trafo Foto 14">
+                        <img src="pt 15.jpg" alt="Trafo Foto 15">
+                        <video src="pt 16.webm" autoplay loop muted playsinline></video>
+                        <video src="pt 17.webm" autoplay loop muted playsinline></video>
+                    </div>
+                    <button class="slider-btn prev"><i class='bx bx-chevron-left'></i></button>
+                    <button class="slider-btn next"><i class='bx bx-chevron-right'></i></button>
+                </div>
+                <div class="port-info">
+                    <span class="port-badge">Kunjungan Industri</span>
+                    <h3>PT DSSP SUMSEL-5 (PLTU)</h3>
+                    <p>Melakukan observasi lapangan dan mengikuti rapat di fasilitas PLTU Mulut Tambang berkapasitas 2x150 MW milik PT Datang DSSP Power Indonesia. Mempelajari sistem operasi pembangkit listrik tenaga uap berskala besar.</p>
+                </div>
+            </div>
+
+            <div class="port-card">
+                <div class="slider-container">
+                    <div class="slider-wrapper" id="slider-ukk" data-index="0">
+                        <img src="delta 1.jpg" alt="UKK Foto 1">
+                        <img src="delta 2.jpg" alt="UKK Foto 2">
+                        <img src="delta 3.jpg" alt="UKK Foto 3">
+                        <img src="delta 4.jpg" alt="UKK Foto 4">
+                        <img src="delta 5.jpg" alt="UKK Foto 5">
+                        <img src="delta 6.jpg" alt="UKK Foto 6">
+                        <video src="delta 7.webm" autoplay loop muted playsinline></video>
+                        <video src="delta 8.webm" autoplay loop muted playsinline></video>
+                    </div>
+                    <button class="slider-btn prev"><i class='bx bx-chevron-left'></i></button>
+                    <button class="slider-btn next"><i class='bx bx-chevron-right'></i></button>
+                </div>
+                <div class="port-info">
+                    <span class="port-badge">Panel Kontaktor</span>
+                    <h3>Panel Listrik Star-Delta</h3>
+                    <p>Merakit sistem kontrol motor listrik secara presisi dan menjadi peserta pertama yang menyelesaikan rangkaian ujian dengan sukses pada Uji Kompetensi Keahlian (UKK).</p>
+                </div>
+            </div>
+            
+            <div class="port-card">
+                <div class="slider-container">
+                    <div class="slider-wrapper" id="slider-trafo" data-index="0">
+                        <img src="pkl 1.jpg" alt="Trafo Foto 1">
+                        <img src="pkl 2.jpg" alt="Trafo Foto 2">
+                        <img src="pkl 3.jpg" alt="Trafo Foto 3">
+                        <img src="pkl 4.jpg" alt="Trafo Foto 4">
+                        <img src="pkl 5.jpg" alt="Trafo Foto 5">
+                        <img src="pkl 6.jpg" alt="Trafo Foto 6">
+                        <video src="pkl 7.webm" autoplay loop muted playsinline></video>
+                        <video src="pkl 8.webm" autoplay loop muted playsinline></video>
+           </div>
+                    <button class="slider-btn prev"><i class='bx bx-chevron-left'></i></button>
+                    <button class="slider-btn next"><i class='bx bx-chevron-right'></i></button>
+                </div>
+                <div class="port-info">
+                    <span class="port-badge">Electrical</span>
+                    <h3>Instalasi Jaringan & Trafo</h3>
+                    <p>Bekerja sama dalam tim lapangan untuk instalasi, pemeliharaan, dan troubleshooting Jaringan Tegangan Menengah (JTM) serta komponen trafo distribusi. Proyek berlokasi di Peninggalan.</p>
+                </div>
+            </div>
+            <div class="port-card">
+                <div class="slider-container">
+                    <div class="slider-wrapper" id="slider-hw" data-index="0">
+                        <img src="hp foto 1.jpg" alt="HP Foto 1">
+                        <img src="hp foto 2.jpg" alt="HP Foto 2">
+                        <img src="hp foto 3.jpg" alt="HP Foto 3">
+                        <img src="hp foto 4.jpg" alt="HP Foto 4">
+                        <img src="hp foto 5.jpg" alt="HP Foto 5">
+                        <img src="hp foto 6.jpg" alt="HP Foto 6">
+                        <video src="hp video 7.webm" autoplay loop muted playsinline></video>
+                        <video src="hp video 8.webm" autoplay loop muted playsinline></video>
+                    </div>
+                    <button class="slider-btn prev"><i class='bx bx-chevron-left'></i></button>
+                    <button class="slider-btn next"><i class='bx bx-chevron-right'></i></button>
+                </div>
+                <div class="port-info">
+                    <span class="port-badge">Hardware</span>
+                    <h3>Smartphone Repair</h3>
+                    <p>Bongkar pasang dan penggantian LCD serta komponen internal smartphone dengan tingkat ketelitian tinggi, termasuk proses pengeleman rapi menggunakan T-7000.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="skills" id="skill">
+        <h2 class="section-title">Core <span>Skills</span></h2>
+        <div class="skills-grid">
+            <div class="skill-box"><i class='bx bx-bolt-circle'></i><h3>Electrical Wiring</h3></div>
+            <div class="skill-box"><i class='bx bx-wrench'></i><h3>Hardware Repair</h3></div>
+            <div class="skill-box"><i class='bx bx-chip'></i><h3>Motor Control</h3></div>
+            <div class="skill-box"><i class='bx bx-code-alt'></i><h3>Web Development</h3></div>
+            <div class="skill-box"><i class='bx bx-mobile-alt'></i><h3>UI Modding</h3></div>
+            <div class="skill-box"><i class='bx bx-cog'></i><h3>Troubleshooting</h3></div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <h2 class="section-title">Contact <span>Me</span></h2>
+        <div class="contact">
+            <form action="https://formspree.io/f/mjglbjjv" method="POST">
+                <input type="text" name="name" placeholder="Name" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <textarea name="message" placeholder="Message" required></textarea>
+                <button class="btn-primary" type="submit" style="border: none; cursor: pointer;">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <div id="wa-popup" class="wa-popup-overlay">
+        <div class="wa-popup-box">
+            <i class='bx bxl-whatsapp popup-icon'></i>
+            <h3>Hubungi via WhatsApp?</h3>
+            <p>Kamu akan dialihkan ke aplikasi WhatsApp untuk mengobrol dengan Rizky.</p>
+            <div class="wa-popup-btns">
+                <button class="btn-cancel" onclick="closeWaPopup()">Batal</button>
+                <button class="btn-continue" onclick="redirectToWa()">Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" class="whatsapp-float" onclick="openWaPopup(event)">
+        <i class='bx bxl-whatsapp'></i>
+    </a>
+
+    <footer>
+        <p>&copy; 2026 Riski Kurniawan. Musi Banyuasin, South Sumatra. Built with passion & Code.</p>
+    </footer>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+
+        const container = document.getElementById('rubik-canvas-container');
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+        camera.position.set(7, 7, 11);
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+        scene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
+        dirLight.position.set(10, 20, 10);
+        scene.add(dirLight);
+
+        const rubikGroup = new THREE.Group();
+        scene.add(rubikGroup);
+
+        const colors = {
+            right: 0xcc0000, left: 0xff6600, top: 0xffffff,
+            bottom: 0xffcc00, front: 0x0033cc, back: 0x009900, core: 0x111111
+        };
+
+        const cubes = [];
+        const gap = 1.05; 
+        const size = 0.96; 
+        const geometry = new RoundedBoxGeometry(size, size, size, 4, 0.15);
+
+        for (let x = -1; x <= 1; x++) {
+            for (let y = -1; y <= 1; y++) {
+                for (let z = -1; z <= 1; z++) {
+                    const materials = [
+                        new THREE.MeshStandardMaterial({ color: x === 1 ? colors.right : colors.core, roughness: 0.2, metalness: 0.1 }),
+                        new THREE.MeshStandardMaterial({ color: x === -1 ? colors.left : colors.core, roughness: 0.2, metalness: 0.1 }),
+                        new THREE.MeshStandardMaterial({ color: y === 1 ? colors.top : colors.core, roughness: 0.2, metalness: 0.1 }),
+                        new THREE.MeshStandardMaterial({ color: y === -1 ? colors.bottom : colors.core, roughness: 0.2, metalness: 0.1 }),
+                        new THREE.MeshStandardMaterial({ color: z === 1 ? colors.front : colors.core, roughness: 0.2, metalness: 0.1 }),
+                        new THREE.MeshStandardMaterial({ color: z === -1 ? colors.back : colors.core, roughness: 0.2, metalness: 0.1 })
+                    ];
+
+                    const cube = new THREE.Mesh(geometry, materials);
+                    cube.position.set(x * gap, y * gap, z * gap);
+                    rubikGroup.add(cube);
+                    cubes.push(cube);
+                }
+            }
+        }
+
+        rubikGroup.rotation.x = Math.PI / 6;
+        rubikGroup.rotation.y = -Math.PI / 4;
+
+        let moveQueue = [];
+        let history = [];
+        let isAnimating = false;
+        let systemState = 0; 
+        let delayTimer = 0;
+
+        function rotateLayer(move) {
+            isAnimating = true;
+            const pivot = new THREE.Object3D();
+            pivot.rotation.set(0, 0, 0);
+            pivot.updateMatrixWorld();
+            rubikGroup.add(pivot);
+
+            const activeCubes = [];
+            const eps = 0.1;
+
+            cubes.forEach(c => {
+                if (Math.abs(c.position[move.axis] - (move.layer * gap)) < eps) {
+                    activeCubes.push(c);
+                }
+            });
+
+            activeCubes.forEach(c => pivot.attach(c));
+
+            const targetAngle = move.dir * (Math.PI / 2);
+            let currentAngle = 0;
+            const speed = 0.15;
+
+            function animateTurn() {
+                const step = Math.min(speed, Math.abs(targetAngle - currentAngle));
+                currentAngle += move.dir > 0 ? step : -step;
+                
+                pivot.rotation[move.axis] = currentAngle;
+
+                if (Math.abs(currentAngle) < Math.abs(targetAngle)) {
+                    requestAnimationFrame(animateTurn);
+                } else {
+                    pivot.rotation[move.axis] = targetAngle;
+                    pivot.updateMatrixWorld();
+                    
+                    activeCubes.forEach(c => {
+                        rubikGroup.attach(c);
+                        c.position.x = Math.round(c.position.x / gap) * gap;
+                        c.position.y = Math.round(c.position.y / gap) * gap;
+                        c.position.z = Math.round(c.position.z / gap) * gap;
+                        
+                        const euler = new THREE.Euler().setFromQuaternion(c.quaternion);
+                        euler.x = Math.round(euler.x / (Math.PI/2)) * (Math.PI/2);
+                        euler.y = Math.round(euler.y / (Math.PI/2)) * (Math.PI/2);
+                        euler.z = Math.round(euler.z / (Math.PI/2)) * (Math.PI/2);
+                        c.quaternion.setFromEuler(euler);
+                    });
+
+                    rubikGroup.remove(pivot);
+                    isAnimating = false;
+                }
+            }
+            animateTurn();
+        }
+
+        function generateShuffle(movesCount) {
+            const axes = ['x', 'y', 'z'];
+            const layers = [-1, 0, 1];
+            const dirs = [-1, 1];
+            for (let i = 0; i < movesCount; i++) {
+                const move = {
+                    axis: axes[Math.floor(Math.random() * axes.length)],
+                    layer: layers[Math.floor(Math.random() * layers.length)],
+                    dir: dirs[Math.floor(Math.random() * dirs.length)]
+                };
+                moveQueue.push(move);
+                history.push(move);
+            }
+        }
+
+        function generateSolve() {
+            while (history.length > 0) {
+                const lastMove = history.pop();
+                moveQueue.push({
+                    axis: lastMove.axis,
+                    layer: lastMove.layer,
+                    dir: lastMove.dir * -1 
+                });
+            }
+        }
+
+        function renderLoop() {
+            requestAnimationFrame(renderLoop);
+            rubikGroup.rotation.y += 0.005;
+            rubikGroup.rotation.x += 0.002;
+
+            if (!isAnimating) {
+                if (moveQueue.length > 0) {
+                    rotateLayer(moveQueue.shift());
+                } else {
+                    delayTimer++;
+                    if (delayTimer > 60) {
+                        delayTimer = 0;
+                        if (systemState === 0) {
+                            generateShuffle(25);
+                            systemState = 1;
+                        } else if (systemState === 1) {
+                            generateSolve(); 
+                            systemState = 2;
+                        } else if (systemState === 2) {
+                            systemState = 0; 
+                        }
+                    }
+                }
+            }
+            renderer.render(scene, camera);
+        }
+        renderLoop();
+
+        window.addEventListener('resize', () => {
+            const newWidth = container.clientWidth;
+            const newHeight = container.clientHeight;
+            camera.aspect = newWidth / newHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(newWidth, newHeight);
+        });
+    </script>
+
+    <script>
+        // --- 1. SCRIPT NGETIK OTOMATIS ---
+        const words = ["Electrician", "Hardware Tech", "IT Enthusiast", "TITL Expert", "Development Web"];
+        let i = 0;
+        let timer;
+
+        function typingEffect() {
+            let display = document.getElementById('typewriter');
+            if(display) {
+                display.innerHTML = "";
+                let word = words[i].split("");
+                function typeChar() {
+                    if (word.length > 0) {
+                        display.innerHTML += word.shift();
+                        timer = setTimeout(typeChar, 100);
+                    } else {
+                        timer = setTimeout(deleteEffect, 2000);
+                    }
+                }
+                typeChar();
+            }
+        }
+
+        function deleteEffect() {
+            let display = document.getElementById('typewriter');
+            if(display) {
+                let text = display.innerHTML;
+                function deleteChar() {
+                    if (text.length > 0) {
+                        text = text.slice(0, -1);
+                        display.innerHTML = text;
+                        timer = setTimeout(deleteChar, 50);
+                    } else {
+                        i = (i + 1) % words.length;
+                        timer = setTimeout(typingEffect, 100);
+                    }
+                }
+                deleteChar();
+            }
+        }
+        setTimeout(typingEffect, 100);
+
+        // --- 2. SCRIPT SLIDER (KLIK TOMBOL) ---
+        document.querySelectorAll('.slider-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                
+                const container = this.parentElement;
+                const wrapper = container.querySelector('.slider-wrapper');
+                if (!wrapper) return; 
+
+                const step = this.classList.contains('prev') ? -1 : 1;
+                const totalItems = wrapper.children.length; 
+                let currentIndex = parseInt(wrapper.getAttribute('data-index')) || 0;
+                
+                currentIndex += step;
+                if (currentIndex < 0) currentIndex = totalItems - 1;
+                if (currentIndex >= totalItems) currentIndex = 0;
+                
+                wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                wrapper.setAttribute('data-index', currentIndex);
+            });
+        });
+
+        // --- 3. SCRIPT SENSOR SWIPE JARI (SENTUHAN LAYAR HP) ---
+        const sliders = document.querySelectorAll('.slider-container');
+        sliders.forEach(slider => {
+            let startX = 0;
+            let endX = 0;
+
+            slider.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+            }, {passive: true});
+
+            slider.addEventListener('touchmove', (e) => {
+                endX = e.touches[0].clientX;
+            }, {passive: true});
+
+            slider.addEventListener('touchend', () => {
+                if (!startX || !endX) return; 
+                
+                let diffX = startX - endX;
+                let wrapper = slider.querySelector('.slider-wrapper');
+                if (!wrapper) return;
+
+                const totalItems = wrapper.children.length; 
+                let currentIndex = parseInt(wrapper.getAttribute('data-index')) || 0;
+
+                if (diffX > 50) { 
+                    currentIndex += 1; 
+                } else if (diffX < -50) { 
+                    currentIndex -= 1; 
+                } else {
+                    return; 
+                }
+
+                if (currentIndex < 0) currentIndex = totalItems - 1;
+                if (currentIndex >= totalItems) currentIndex = 0;
+
+                wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+                wrapper.setAttribute('data-index', currentIndex);
+                
+                startX = 0;
+                endX = 0;
+            });
+        });
+    </script>
+    
+    <script>
+        // Mencegah klik kanan mouse
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        });
+
+        // Mencegah kombinasi tombol keyboard untuk Inspect Element & View Source
+        document.onkeydown = function(e) {
+            if (e.keyCode === 123) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) return false;
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) return false;
+            if (e.ctrlKey && e.keyCode === 85) return false;
+        };
+    </script>
+
+    <script>
+        // --- LOGIKA WHATSAPP POP-UP ---
+        function openWaPopup(e) {
+            e.preventDefault();
+            document.getElementById('wa-popup').classList.add('active');
+        }
+        
+        function closeWaPopup() {
+            document.getElementById('wa-popup').classList.remove('active');
+        }
+        
+        function redirectToWa() {
+            window.open('https://wa.me/6283861768216', '_blank');
+            closeWaPopup(); 
+        }
+    </script>
+</body>
+</html>
