@@ -409,7 +409,7 @@
     <section class="contact" id="contact">
         <h2 class="section-title">Contact <span>Me</span></h2>
         <div class="contact">
-            <form action="https://formspree.io/f/mjglbjjv" method="POST">
+            <form id="contactForm">
                 <input type="text" name="name" placeholder="Name" required>
                 <input type="email" name="email" placeholder="Email" required>
                 <textarea name="message" placeholder="Message" required></textarea>
@@ -636,7 +636,8 @@
 
     <script>
         // --- 1. SCRIPT NGETIK OTOMATIS ---
-        const words = ["Electrician", "Hardware Technician", "IT Enthusiast", "TITL Expert", "Web Development"];
+        const words = ["Electrician", "Hardware Technician", "IT Enthusiast", "TITL Expert", "Web Developer"];
+
         let i = 0;
         let timer;
 
@@ -787,6 +788,88 @@
             window.open('https://www.linkedin.com/in/riski-kurniawan-191976419?utm_source=share_via&utm_content=profile&utm_medium=member_android', '_blank');
             closeLinkedinPopup(); // Otomatis tutup jendela setelah beralih[span_8](start_span)[span_8](end_span)
         }
+
+              // --- KIRIM PESAN KONTAK LANGSUNG KE SUPABASE + FILTER VALIDASI EMAIL ASLI ---
+        document.getElementById('contactForm')?.addEventListener('submit', async function(e) {
+            e.preventDefault(); 
+            
+            const btnSubmit = this.querySelector('button[type="submit"]');
+            const namaUser = this.querySelector('input[name="name"]').value.trim();
+            const emailUser = this.querySelector('input[name="email"]').value.trim().toLowerCase();
+            const pesanUser = this.querySelector('textarea[name="message"]').value.trim();
+            
+            if(!namaUser || !emailUser || !pesanUser) return;
+            
+            // ==========================================================
+            // LAPIS KEAMANAN 1: VALIDASI REGEX FORMAT EMAIL ASLI
+            // ==========================================================
+            const regexEmailAsli = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (!regexEmailAsli.test(emailUser)) {
+                alert("Format email tidak valid! Harap masukkan alamat email asli Anda.");
+                return;
+            }
+
+            // ==========================================================
+            // LAPIS KEAMANAN 2: BLACKLIST DOMAIN EMAIL PALSU / TEMP MAIL
+            // ==========================================================
+            const blacklistDomain = [
+                'yopmail.com', 'mailinator.com', '10minutemail.com', 
+                'maildrop.cc', 'tempmail.com', 'guerrillamail.com', 
+                'sharklasers.com', 'dispostable.com', 'getairmail.com', 
+                'boun.cr', 'trashmail.com', 'temp-mail.org'
+            ];
+            
+            const domainUser = emailUser.split('@')[1];
+            
+            if (blacklistDomain.includes(domainUser)) {
+                alert("Waduh main-main ya lu! Domain email sekali pakai (Temp Mail) dilarang. Harap gunakan email asli!");
+                return;
+            }
+            
+            // ==========================================================
+            // PROSES PENGIRIMAN DATA AMAN KE SUPABASE
+            // ==========================================================
+            if(btnSubmit) {
+                btnSubmit.disabled = true;
+                btnSubmit.innerText = "Mengirim...";
+            }
+            
+            const URL_SUPABASE = "https://djojqarslfsvubuflwdn.supabase.co/rest/v1/hubungi_saya"; 
+            const KEY_SUPABASE = "sb_publishable_vqUvkJX5XNx5_D75lCnJzw_KPeFSim9"; 
+            
+            try {
+                const response = await fetch(URL_SUPABASE, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': KEY_SUPABASE,
+                        'Authorization': `Bearer ${KEY_SUPABASE}`,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        nama: namaUser,
+                        email: emailUser,
+                        pesan: pesanUser,
+                        tanggal: new Date().toLocaleDateString('id-ID')
+                    })
+                });
+                
+                if (response.ok) {
+                    alert(`Halo ${namaUser}, pesan Anda berhasil terverifikasi aman dan dikirim langsung ke database Riski!`);
+                    this.reset(); 
+                } else {
+                    throw new Error("Gagal menyimpan ke server.");
+                }
+            } catch (error) {
+                alert("Waduh, gagal mengirim pesan. Cek koneksi internet lu, Bos!");
+            } finally {
+                if(btnSubmit) {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerText = "Send Message";
+                }
+            }
+        });
+
 
     </script>
 </body>
