@@ -6,8 +6,8 @@
     <title>Portfolio | Riski Kurniawan</title>
     <meta property="og:title" content="Portfolio | Riski Kurniawan">
 <meta property="og:description" content="Portfolio praktisi Teknik Instalasi Listrik & IT Enthusiast.">
-<meta property="og:image" content="https://rizkyy-cell.github.io/portofolio/meta-cover.jpg">
-<meta property="og:url" content="https://rizkyy-cell.github.io/portofolio/">
+<meta property="og:image" content="https://portofolio-riski-kurniawan.vercel.app/meta-cover.jpg">
+<meta property="og:url" content="https://portofolio-riski-kurniawan.vercel.app">
 <meta property="og:type" content="website">
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -208,7 +208,7 @@
         .btn-cancel:hover { background: rgba(255, 255, 255, 0.05); }
         .btn-continue { background: #25d366; color: white; box-shadow: 0 5px 15px rgba(37, 211, 102, 0.2); }
         .btn-continue:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4); }
-
+        
         /* --- FOOTER --- */
         footer { padding: 50px 8%; text-align: center; border-top: 1px solid var(--border-color); color: var(--text-gray); font-size: 0.9rem; }
 
@@ -247,13 +247,15 @@
                 <a href="#contact" class="btn-primary">Hire Me</a>
                 <a href="https://drive.google.com/file/d/1U4-mcaOV7CDcc3i7zQBOq72zwROMQDNO/view?usp=drivesdk" target="_blank" class="btn-outline"><i class='bx bx-download'></i> Download CV</a>
             </div>
-            <div class="socials" style="margin-top: 30px; display: flex; gap: 15px;">
-                <a href="https://www.instagram.com/rizky._kurniawan25" style="font-size: 24px; color: var(--text-gray);"><i class='bx bxl-instagram'></i></a>
-                <a href="https://www.tiktok.com/@rizky._kurniawan25" style="font-size: 24px; color: var(--text-gray);"><i class='bx bxl-tiktok'></i></a>
-            </div>
+            <div class="socials" style="margin-top: 30px; display: flex; gap: 20px;">
+    <a href="https://www.instagram.com/rizky._kurniawan25" target="_blank" style="font-size: 26px; color: var(--text-gray); transition: 0.3s;" onmouseover="this.style.color='#e1306c'" onmouseout="this.style.color='var(--text-gray)'"><i class='bx bxl-instagram'></i></a>
+    <a href="https://www.tiktok.com/@rizky._kurniawan25" target="_blank" style="font-size: 26px; color: var(--text-gray); transition: 0.3s;" onmouseover="this.style.color='#000000'" onmouseout="this.style.color='var(--text-gray)'"><i class='bx bxl-tiktok'></i></a>
+    <a href="#" onclick="openLinkedinPopup(event)" style="font-size: 26px; color: var(--text-gray); transition: 0.3s;" onmouseover="this.style.color='#0077b5'" onmouseout="this.style.color='var(--text-gray)'"><i class='bx bxl-linkedin-square'></i></a>
+</div>
+
         </div>
         <div class="hero-img">
-            <img src="profile.jpg" alt="Rizky Kurniawan">
+            <img src="profile.jpg" alt="Riski Kurniawan">
         </div>
     </section>
 
@@ -319,7 +321,7 @@
                 </div>
                 <div class="port-info">
                     <span class="port-badge">Kunjungan Industri</span>
-                    <h3>PT DSSP SUMSEL-5 (PLTU)</h3>
+                    <h3>PT Datang DSSP Indonesia SUMSEL-5 (PLTU)</h3>
                     <p>Melakukan observasi lapangan dan mengikuti rapat di fasilitas PLTU Mulut Tambang berkapasitas 2x150 MW milik PT Datang DSSP Power Indonesia. Mempelajari sistem operasi pembangkit listrik tenaga uap berskala besar.</p>
                 </div>
             </div>
@@ -420,13 +422,26 @@
         <div class="wa-popup-box">
             <i class='bx bxl-whatsapp popup-icon'></i>
             <h3>Hubungi via WhatsApp?</h3>
-            <p>Kamu akan dialihkan ke aplikasi WhatsApp untuk mengobrol dengan Rizky.</p>
+            <p>Anda akan dialihkan ke aplikasi WhatsApp untuk mengobrol dengan Riski.</p>
             <div class="wa-popup-btns">
                 <button class="btn-cancel" onclick="closeWaPopup()">Batal</button>
                 <button class="btn-continue" onclick="redirectToWa()">Lanjutkan</button>
             </div>
         </div>
     </div>
+      <!-- --- LOG KREASI POP-UP LINKEDIN --- -->
+    <div id="linkedin-popup" class="wa-popup-overlay">
+        <div class="wa-popup-box">
+            <i class='bx bxl-linkedin-square popup-icon' style="color: #0077b5;"></i>
+            <h3>Buka Profil LinkedIn?</h3>
+            <p>Anda akan dialihkan ke halaman LinkedIn untuk melihat riwayat profesional dan kualifikasi kerja Riski Kurniawan.</p>
+            <div class="wa-popup-btns">
+                <button class="btn-cancel" onclick="closeLinkedinPopup()">Batal</button>
+                <button class="btn-continue" style="background: #0077b5; box-shadow: 0 5px 15px rgba(0, 119, 181, 0.2);" onclick="redirectToLinkedin()">Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
 
     <a href="#" class="whatsapp-float" onclick="openWaPopup(event)">
         <i class='bx bxl-whatsapp'></i>
@@ -445,7 +460,7 @@
         const height = container.clientHeight;
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+        const camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 100);
         camera.position.set(7, 7, 11);
         camera.lookAt(0, 0, 0);
 
@@ -621,7 +636,7 @@
 
     <script>
         // --- 1. SCRIPT NGETIK OTOMATIS ---
-        const words = ["Electrician", "Hardware Tech", "IT Enthusiast", "TITL Expert", "Development Web"];
+        const words = ["Electrician", "Hardware Technician", "IT Enthusiast", "TITL Expert", "Web Development"];
         let i = 0;
         let timer;
 
@@ -757,6 +772,22 @@
             window.open('https://wa.me/6283861768216', '_blank');
             closeWaPopup(); 
         }
+              // --- LOGIKA LINKEDIN POP-UP ---
+        function openLinkedinPopup(e) {
+            e.preventDefault(); // Menahan link bawaan agar tidak loncat ke atas[span_5](start_span)[span_5](end_span)
+            document.getElementById('linkedin-popup').classList.add('active'); // Tampilkan pop-up[span_6](start_span)[span_6](end_span)
+        }
+        
+        function closeLinkedinPopup() {
+            document.getElementById('linkedin-popup').classList.remove('active'); // Sembunyikan pop-up[span_7](start_span)[span_7](end_span)
+        }
+        
+        function redirectToLinkedin() {
+            // GANTI URL DI BAWAH INI JADI URL PROFIL LINKEDIN ASLI LU:
+            window.open('https://www.linkedin.com/in/riski-kurniawan-191976419?utm_source=share_via&utm_content=profile&utm_medium=member_android', '_blank');
+            closeLinkedinPopup(); // Otomatis tutup jendela setelah beralih[span_8](start_span)[span_8](end_span)
+        }
+
     </script>
 </body>
 </html>
