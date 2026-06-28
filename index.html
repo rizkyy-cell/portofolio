@@ -223,6 +223,13 @@
             .nav-links { display: none; /* Hide on small screens for cleaner look */ }
         }
     </style>
+  <!-- INI SCRIPT PERMANEN EMAILJS YANG KELEWATAN, BOS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+       (function(){
+          emailjs.init("DrOFTbNudILAv3tT2"); 
+       })();
+    </script>
 </head>
 <body>
 
@@ -236,6 +243,7 @@
             <a href="#skill">Skills</a>
             <a href="#contact">Contact</a>
         </nav>
+
     </header>
 
     <section class="hero" id="home">
@@ -438,6 +446,18 @@
             <div class="wa-popup-btns">
                 <button class="btn-cancel" onclick="closeLinkedinPopup()">Batal</button>
                 <button class="btn-continue" style="background: #0077b5; box-shadow: 0 5px 15px rgba(0, 119, 181, 0.2);" onclick="redirectToLinkedin()">Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+      <!-- --- LOG KREASI POP-UP STATUS NOTIFIKASI --- -->
+    <div id="status-popup" class="wa-popup-overlay">
+        <div class="wa-popup-box" style="max-width: 400px;">
+            <i id="status-icon" class='bx bx-check-circle popup-icon' style="color: #3b82f6; font-size: 70px;"></i>
+            <h3 id="status-title">Pesan Terkirim!</h3>
+            <p id="status-message">Detail status pesan Anda akan muncul di sini.</p>
+            <div class="wa-popup-btns">
+                <button class="btn-continue" style="background: var(--accent-blue); box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);" onclick="closeStatusPopup()">Oke, Siap</button>
             </div>
         </div>
     </div>
@@ -789,7 +809,7 @@
             closeLinkedinPopup(); // Otomatis tutup jendela setelah beralih[span_8](start_span)[span_8](end_span)
         }
 
-              // --- KIRIM PESAN KONTAK LANGSUNG KE SUPABASE + FILTER VALIDASI EMAIL ASLI ---
+                                           // --- KIRIM PESAN KONTAK LANGSUNG KE SUPABASE + FILTER VALIDASI EMAIL ASLI ---
         document.getElementById('contactForm')?.addEventListener('submit', async function(e) {
             e.preventDefault(); 
             
@@ -805,29 +825,25 @@
             // ==========================================================
             const regexEmailAsli = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!regexEmailAsli.test(emailUser)) {
-                alert("Format email tidak valid! Harap masukkan alamat email asli Anda.");
+                showStatusPopup(false, "Format Salah", "Format email tidak valid! Harap masukkan alamat email asli Anda.");
                 return;
             }
 
             // ==========================================================
-            // LAPIS KEAMANAN 2: BLACKLIST DOMAIN EMAIL PALSU / TEMP MAIL
+            // LAPIS KEAMANAN 2: WHITELIST DOMAIN EMAIL RESMI & POPULER
             // ==========================================================
-            const blacklistDomain = [
-                'yopmail.com', 'mailinator.com', '10minutemail.com', 
-                'maildrop.cc', 'tempmail.com', 'guerrillamail.com', 
-                'sharklasers.com', 'dispostable.com', 'getairmail.com', 
-                'boun.cr', 'trashmail.com', 'temp-mail.org'
-            ];
-            
             const domainUser = emailUser.split('@')[1];
+            const domainResmi = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'live.com', 'icloud.com'];
             
-            if (blacklistDomain.includes(domainUser)) {
-                alert("Waduh main-main ya lu! Domain email sekali pakai (Temp Mail) dilarang. Harap gunakan email asli!");
+            const isEmailValidDanAsli = domainResmi.includes(domainUser) || domainUser.endsWith('.co.id') || (domainUser.endsWith('.id') && !domainUser.includes('temp'));
+
+            if (!isEmailValidDanAsli) {
+                showStatusPopup(false, "Akses Ditolak", "Waduh main-main ya lu! Sistem mendeteksi email sekali pakai atau tidak resmi. Harap gunakan Gmail atau email asli!");
                 return;
             }
-            
+
             // ==========================================================
-            // PROSES PENGIRIMAN DATA AMAN KE SUPABASE
+            // PROSES PENGIRIMAN DATA AMAN KE SUPABASE & EMAILJS
             // ==========================================================
             if(btnSubmit) {
                 btnSubmit.disabled = true;
@@ -838,6 +854,7 @@
             const KEY_SUPABASE = "sb_publishable_vqUvkJX5XNx5_D75lCnJzw_KPeFSim9"; 
             
             try {
+                // 1. Kirim Data ke Supabase (UDAH FIX PAKE INGGRIS SESUAI STRUKTUR SQL!)
                 const response = await fetch(URL_SUPABASE, {
                     method: 'POST',
                     headers: {
@@ -847,21 +864,29 @@
                         'Prefer': 'return=minimal'
                     },
                     body: JSON.stringify({
-                        nama: namaUser,
-                        email: emailUser,
-                        pesan: pesanUser,
+                        name: namaUser,       // Sesuai kolom 'name' di SQL
+                        email: emailUser,     // Sesuai kolom 'email' di SQL
+                        message: pesanUser,   // Sesuai kolom 'message' di SQL
                         tanggal: new Date().toLocaleDateString('id-ID')
                     })
                 });
                 
                 if (response.ok) {
-                    alert(`Halo ${namaUser}, pesan Anda berhasil terverifikasi aman dan dikirim langsung ke database Riski!`);
+                    // 2. Jika Supabase Sukses, Tembak Notifikasi ke Gmail via EmailJS (BAHASA INGGRIS)
+                    emailjs.send("service_o95nw27", "template_0gg3hyv", {
+                        name: namaUser,       // Mengisi {{name}} di EmailJS lu
+                        email: emailUser,     // Mengisi {{email}} di EmailJS lu
+                        message: pesanUser    // Mengisi {{message}} di EmailJS lu
+                    });
+
+                    // Tampilkan Pop-up Sukses Premium Glassmorphism
+                    showStatusPopup(true, "Berhasil Terkirim", `Halo ${namaUser}, pesan Anda berhasil terverifikasi aman dan dikirim langsung ke Email & Database Riski!`);
                     this.reset(); 
                 } else {
                     throw new Error("Gagal menyimpan ke server.");
                 }
             } catch (error) {
-                alert("Waduh, gagal mengirim pesan. Cek koneksi internet lu, Bos!");
+                showStatusPopup(false, "Gagal Mengirim", "Waduh, gagal mengirim pesan. Hubungan server Supabase atau EmailJS bermasalah, Bos!");
             } finally {
                 if(btnSubmit) {
                     btnSubmit.disabled = false;
@@ -869,7 +894,33 @@
                 }
             }
         });
-
+      
+                  // --- LOGIKA KONTROL POP-UP NOTIFIKASI CUSTOM ---
+        function showStatusPopup(isSuccess, title, message) {
+            const popup = document.getElementById('status-popup');
+            const icon = document.getElementById('status-icon');
+            const titleEl = document.getElementById('status-title');
+            const msgEl = document.getElementById('status-message');
+            
+            if(!popup || !icon || !titleEl || !msgEl) return;
+            
+            titleEl.innerText = title;
+            msgEl.innerText = message;
+            
+            if(isSuccess) {
+                icon.className = 'bx bx-check-circle popup-icon';
+                icon.style.color = '#25d366'; // Warna Hijau Sukses
+            } else {
+                icon.className = 'bx bx-x-circle popup-icon';
+                icon.style.color = '#cc0000'; // Warna Merah Gagal
+            }
+            
+            popup.classList.add('active');
+        }
+        
+        function closeStatusPopup() {
+            document.getElementById('status-popup')?.classList.remove('active');
+        }
 
     </script>
 </body>
